@@ -1,0 +1,103 @@
+...<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Угадай число</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+        #game-container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="number"] {
+            padding: 5px;
+            font-size: 16px;
+            width: 100px;
+        }
+        button {
+            padding: 5px 10px;
+            font-size: 16px;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Угадай число</h1>
+        <p>Введите диапазон:</p>
+        <input type="number" id="range-input" placeholder="Введите диапазон">
+        <button id="start-btn">Начать игру</button>
+        <div id="game-board" style="display: none;">
+            <p>У вас есть <span id="attempts"></span> попыток, чтобы угадать число от 0 до <span id="max-range"></span></p>
+            <input type="number" id="guess-input" placeholder="Введите число">
+            <button id="guess-btn">Угадать</button>
+            <div id="output"></div>
+        </div>
+    </div>
+
+    <script>
+        const rangeInput = document.getElementById('range-input');
+        const startBtn = document.getElementById('start-btn');
+        const gameBoard = document.getElementById('game-board');
+        const attemptsSpan = document.getElementById('attempts');
+        const maxRangeSpan = document.getElementById('max-range');
+        const guessInput = document.getElementById('guess-input');
+        const guessBtn = document.getElementById('guess-btn');
+        const output = document.getElementById('output');
+
+        let secretNumber, attempts, maxRange;
+
+        startBtn.addEventListener('click', startGame);
+        guessBtn.addEventListener('click', guessNumber);
+
+        function startGame() {
+            maxRange = parseInt(rangeInput.value);
+            if (isNaN(maxRange) || maxRange < 1) {
+                alert('Неверный диапазон. Введите положительное число.');
+                return;
+            }
+
+            secretNumber = Math.floor(Math.random() * (maxRange + 1));
+            attempts = 10;
+            maxRangeSpan.textContent = maxRange;
+            attemptsSpan.textContent = attempts;
+            gameBoard.style.display = 'block';
+            output.textContent = '';
+        }
+
+        function guessNumber() {
+            const guess = parseInt(guessInput.value);
+            if (isNaN(guess)) {
+                alert('Неверный ввод. Введите число.');
+                return;
+            }
+
+            if (guess === secretNumber) {
+                output.textContent = 'Вы угадали число!';
+                sleep(2000)
+                gameBoard.style.display = 'none';
+            } else {
+                attempts--;
+                attemptsSpan.textContent = attempts;
+                if (attempts === 0) {
+                    output.textContent = `Загаданное число было ${secretNumber}. Не расстраивайтесь!`;
+                    gameBoard.style.display = 'none';
+                } else {
+                    output.textContent = guess > secretNumber ? 'Загаданное число меньше' : 'Загаданное число больше';
+                }
+            }
+        }
+    </script>
+</body>
+</html>
